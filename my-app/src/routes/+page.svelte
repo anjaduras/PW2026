@@ -1,56 +1,63 @@
 <script>
-	import { onMount } from 'svelte';
-	import Chart from 'chart.js/auto';
+    import { onMount, tick } from "svelte";
+    import Chart from "chart.js/auto";
 
-	let canvas;
-	let chart;
+    let canvas;
+    let chart;
 
-	let labels = [];
-	let dataPoints = [];
+    async function load() {
+        const res = await fetch("/api/data");
+        const data = await res.json();
 
-	onMount(() => {
-		// small delay ensures DOM is ready
-		setTimeout(() => {
-			chart = new Chart(canvas, {
-				type: 'line',
-				data: {
-					labels,
-					datasets: [
-						{
-							label: 'Höhe (m)',
-							data: dataPoints,
-							borderWidth: 2,
-							tension: 0.3
-						}
-					]
-				},
-				options: {
-					responsive: true,
-					maintainAspectRatio: false,
-					animation: false
-				}
-			});
+        console.log("NEW DATA:", data[data.length - 1]);
 
-			setInterval(() => {
-				const now = new Date().toLocaleTimeString();
-				const height = 420 + Math.random() * 30;
+        if (!chart) return;
 
-				labels.push(now);
-				dataPoints.push(height);
+        const labels = data.map((d) =>
+            new Date(d.timestamp).toLocaleTimeString(),
+        );
 
-				if (labels.length > 20) {
-					labels.shift();
-					dataPoints.shift();
-				}
+        const values = data.map((d) => d.altitude);
 
-				chart.update();
-			}, 1000);
-		}, 100);
-	});
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = values;
+
+        chart.update("none"); // IMPORTANT: smoother + faster update
+    }
+    
+    onMount(async () => {
+        await tick();
+
+        const ctx = canvas.getContext("2d");
+
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Höhe",
+                        data: [],
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 300,
+                },
+            },
+        });
+
+        load();
+        setInterval(load, 1000);
+    });
 </script>
 
-<h1>ESP Höhen Live Simulation</h1>
+<h1>Live Höhen Daten</h1>
 
-<div style="height: 400px;">
-	<canvas bind:this={canvas}></canvas>
+<div style="height: 400px; width: 100%;">
+    <canvas bind:this={canvas}></canvas>
 </div>
