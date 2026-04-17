@@ -1,0 +1,8 @@
+# System packages (install with apt)
+# sudo apt install mosquitto mosquitto-clients
+
+
+
+# Python packages (install with pip)
+paho-mqtt
+mysql-connector-python

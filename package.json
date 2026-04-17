@@ -1,5 +1,25 @@
 {
   "dependencies": {
     "chart.js": "^4.5.1"
-  }
+  },
+  "name": "pw2026",
+  "version": "1.0.0",
+  "description": "pw..2026",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anjaduras/PW2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anjaduras/PW2026/issues"
+  },
+  "homepage": "https://github.com/anjaduras/PW2026#readme"
 }
